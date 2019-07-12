@@ -29,9 +29,8 @@ public class NotesAdapter
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
         Note note = mNotes.get(position);
         holder.mTitleTextView.setText(note.getTitle());
-        holder.mDescritptionTextView.setText(note.getDescription());
+        holder.mDescriptionTextView.setText(note.getDescription());
         holder.mDayOfWeekTextView.setText(note.getDayOfWeek());
-        holder.mPriorityTextView.setText(String.format("%s", note.getPriority()));
     }
 
     @Override
@@ -41,16 +40,14 @@ public class NotesAdapter
 
     class NotesViewHolder extends RecyclerView.ViewHolder {
         private TextView mTitleTextView;
-        private TextView mDescritptionTextView;
+        private TextView mDescriptionTextView;
         private TextView mDayOfWeekTextView;
-        private TextView mPriorityTextView;
 
         public NotesViewHolder(@NonNull View itemView) {
             super(itemView);
             mTitleTextView = itemView.findViewById(R.id.title_text_view);
-            mDescritptionTextView = itemView.findViewById(R.id.description_text_view);
+            mDescriptionTextView = itemView.findViewById(R.id.description_text_view);
             mDayOfWeekTextView = itemView.findViewById(R.id.day_of_week_text_view);
-            mPriorityTextView = itemView.findViewById(R.id.priority_text_view);
         }
     }
 }
