@@ -20,19 +20,19 @@ public class MainActivity extends AppCompatActivity {
 
         mNotesRecyclerView = findViewById(R.id.notes_recycler_view);
 
-        mNotes.add(new Note("Парикмахер", "сделать прическу", "понедельник", 2));
+        mNotes.add(new Note("Парикмахер", "сделать прическу", "понедельник", 0));
         mNotes.add(new Note("Курсы", "програмирование", "вторник", 2));
         mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
         mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
         mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
-        mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
-        mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
+        mNotes.add(new Note("Пикник", "шашлык", "среда", 1));
+        mNotes.add(new Note("Пикник", "шашлык", "среда", 0));
         mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
         mNotes.add(new Note("Охота", "на раков", "понедельник", 2));
         mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
+        mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 1));
         mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
-        mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
-        mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
+        mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 1));
         mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
 
         NotesAdapter adapter = new NotesAdapter(mNotes);

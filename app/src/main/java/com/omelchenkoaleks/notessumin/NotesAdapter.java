@@ -31,6 +31,25 @@ public class NotesAdapter
         holder.mTitleTextView.setText(note.getTitle());
         holder.mDescriptionTextView.setText(note.getDescription());
         holder.mDayOfWeekTextView.setText(note.getDayOfWeek());
+
+        /*
+            получаем приоритет (priority) из заметки (объекта) и уже в зависимости от
+            приоритета будем устанавливать цвет
+         */
+        int colorId;
+        int priority = note.getPriority();
+        switch (priority) {
+            case 1:
+                colorId = holder.itemView.getResources().getColor(android.R.color.holo_red_light);
+                break;
+            case 2:
+                colorId = holder.itemView.getResources().getColor(android.R.color.holo_orange_dark);
+                break;
+            default:
+                colorId = holder.itemView.getResources().getColor(android.R.color.holo_green_light);
+                break;
+        }
+        holder.mTitleTextView.setBackgroundColor(colorId);
     }
 
     @Override
