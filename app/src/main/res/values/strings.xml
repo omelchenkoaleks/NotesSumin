@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Notes Sumin</string>
+    <string name="day_of_week">День недели:</string>
 </resources>
