@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mNotesRecyclerView;
+    private NotesAdapter mAdapter;
 
     // static - чтобы не нужно было создавать новый объект активити
     // final - чтобы случайно не присвоить ему новое значение
@@ -42,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
             mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
         }
 
-        final NotesAdapter adapter = new NotesAdapter(mNotes);
-        adapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
+        mAdapter = new NotesAdapter(mNotes);
+        mAdapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(int position) {
                 // выводим позицию на экран
@@ -51,22 +52,26 @@ public class MainActivity extends AppCompatActivity {
 //                        "Номер позиции: " + position,
 //                        Toast.LENGTH_SHORT).show();
 
-                /*
-                    каждый раз при добавлении или удалении айтема в
-                    RecyclerView нужно сообщить об этом адаптеру
-                    используется метод notifyDataSetChanged()
-                 */
-                mNotes.remove(position);
-                adapter.notifyDataSetChanged();
+
             }
 
             @Override
             public void onLongClick(int position) {
-
+                remove(position);
             }
         });
         mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mNotesRecyclerView.setAdapter(adapter);
+        mNotesRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void remove(int position) {
+        /*
+                    каждый раз при добавлении или удалении айтема в
+                    RecyclerView нужно сообщить об этом адаптеру
+                    используется метод notifyDataSetChanged()
+                 */
+        mNotes.remove(position);
+        mAdapter.notifyDataSetChanged();
     }
 
     public void onClickAddNote(View view) {

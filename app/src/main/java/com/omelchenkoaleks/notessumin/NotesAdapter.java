@@ -40,7 +40,7 @@ public class NotesAdapter
      */
     interface OnNoteClickListener {
         void onNoteClick(int position);
-        void onLongClick(int position);
+        void onLongClick(int position); // для удаления при долгом нажатии
     }
 
     public void setOnNoteClickListener(OnNoteClickListener onNoteClickListener) {
@@ -108,6 +108,7 @@ public class NotesAdapter
                 }
             });
 
+            // добавляем слушателя на долгое нажатие для удаления
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
