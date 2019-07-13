@@ -3,6 +3,7 @@ package com.omelchenkoaleks.notessumin;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,6 +43,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         NotesAdapter adapter = new NotesAdapter(mNotes);
+        adapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
+            @Override
+            public void onNoteClick(int position) {
+                Toast.makeText(MainActivity.this,
+                        "Номер позиции: " + position,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
         mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mNotesRecyclerView.setAdapter(adapter);
     }

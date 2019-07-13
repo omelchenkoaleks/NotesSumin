@@ -13,9 +13,37 @@ import java.util.ArrayList;
 public class NotesAdapter
         extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
     private ArrayList<Note> mNotes;
+    private OnNoteClickListener mOnNoteClickListener;
 
     public NotesAdapter(ArrayList<Note> notes) {
         mNotes = notes;
+    }
+
+    /*
+        у RecyclerView нет метода наподобие onItemClickListener,
+        поэтому его нужно создать самостоятельно, чтобы была возможность
+        обрабатывать клики пользователя
+
+        для этого в адаптере:
+         1, создается интерфейс
+         2, создается объект этого слушателя (интерфейса)
+         3, и добавляется на него сетер
+
+        что дальше и как это работает?
+            1, когда мы кликаем на какую-то заметку то этой заметкой является
+            по сути itemView, который передается в конструкторе ViewHolder
+            2, у любого itemView можно вызвать метод setOnClickListener
+            3, в методе onClick можно проверить существует ли объект
+            нашего созданного слушателя и вызвать его метод (куда в качестве
+            аргумента передается ...)
+            4, в MainActivity нужно установить наш слушатель
+     */
+    interface OnNoteClickListener {
+        void onNoteClick(int position);
+    }
+
+    public void setOnNoteClickListener(OnNoteClickListener onNoteClickListener) {
+        mOnNoteClickListener = onNoteClickListener;
     }
 
     @NonNull
@@ -50,6 +78,8 @@ public class NotesAdapter
                 break;
         }
         holder.mTitleTextView.setBackgroundColor(colorId);
+
+
     }
 
     @Override
@@ -67,6 +97,15 @@ public class NotesAdapter
             mTitleTextView = itemView.findViewById(R.id.title_text_view);
             mDescriptionTextView = itemView.findViewById(R.id.description_text_view);
             mDayOfWeekTextView = itemView.findViewById(R.id.day_of_week_text_view);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnNoteClickListener != null) {
+                        mOnNoteClickListener.onNoteClick(getAdapterPosition());
+                    }
+                }
+            });
         }
     }
 }
