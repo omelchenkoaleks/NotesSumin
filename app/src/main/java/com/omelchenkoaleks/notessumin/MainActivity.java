@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,15 +46,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mAdapter = new NotesAdapter(mNotes);
+        mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mNotesRecyclerView.setAdapter(mAdapter);
+
         mAdapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(int position) {
                 // выводим позицию на экран
-//                Toast.makeText(MainActivity.this,
-//                        "Номер позиции: " + position,
-//                        Toast.LENGTH_SHORT).show();
-
-
+                Toast.makeText(MainActivity.this,
+                        "Номер позиции нажат: " + position,
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -60,8 +63,28 @@ public class MainActivity extends AppCompatActivity {
                 remove(position);
             }
         });
-        mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mNotesRecyclerView.setAdapter(mAdapter);
+
+        /*
+            удаление при смахивании влево или вправо
+         */
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(
+                        0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                remove(viewHolder.getAdapterPosition());
+            }
+        });
+
+        // ItemTouchHelper нужно прикрепить к RecyclerView
+        itemTouchHelper.attachToRecyclerView(mNotesRecyclerView);
     }
 
     private void remove(int position) {
