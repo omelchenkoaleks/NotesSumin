@@ -40,6 +40,7 @@ public class NotesAdapter
      */
     interface OnNoteClickListener {
         void onNoteClick(int position);
+        void onLongClick(int position);
     }
 
     public void setOnNoteClickListener(OnNoteClickListener onNoteClickListener) {
@@ -104,6 +105,16 @@ public class NotesAdapter
                     if (mOnNoteClickListener != null) {
                         mOnNoteClickListener.onNoteClick(getAdapterPosition());
                     }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mOnNoteClickListener != null) {
+                        mOnNoteClickListener.onLongClick(getAdapterPosition());
+                    }
+                    return true;
                 }
             });
         }

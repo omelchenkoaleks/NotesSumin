@@ -42,13 +42,27 @@ public class MainActivity extends AppCompatActivity {
             mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
         }
 
-        NotesAdapter adapter = new NotesAdapter(mNotes);
+        final NotesAdapter adapter = new NotesAdapter(mNotes);
         adapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(int position) {
-                Toast.makeText(MainActivity.this,
-                        "Номер позиции: " + position,
-                        Toast.LENGTH_SHORT).show();
+                // выводим позицию на экран
+//                Toast.makeText(MainActivity.this,
+//                        "Номер позиции: " + position,
+//                        Toast.LENGTH_SHORT).show();
+
+                /*
+                    каждый раз при добавлении или удалении айтема в
+                    RecyclerView нужно сообщить об этом адаптеру
+                    используется метод notifyDataSetChanged()
+                 */
+                mNotes.remove(position);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onLongClick(int position) {
+
             }
         });
         mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
