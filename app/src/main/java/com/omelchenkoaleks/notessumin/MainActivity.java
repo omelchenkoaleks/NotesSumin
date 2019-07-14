@@ -1,6 +1,9 @@
 package com.omelchenkoaleks.notessumin;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -17,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mNotesRecyclerView;
     private NotesAdapter mAdapter;
 
+    private NotesDBHelper mDBHelper;
+
     // static - чтобы не нужно было создавать новый объект активити
     // final - чтобы случайно не присвоить ему новое значение
     public static final ArrayList<Note> mNotes = new ArrayList<>();
@@ -27,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mNotesRecyclerView = findViewById(R.id.notes_recycler_view);
+
+        mDBHelper = new NotesDBHelper(this);
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
 
         if (mNotes.isEmpty()) {
             mNotes.add(new Note("Парикмахер", "сделать прическу", "понедельник", 0));
@@ -45,7 +53,32 @@ public class MainActivity extends AppCompatActivity {
             mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
         }
 
-        mAdapter = new NotesAdapter(mNotes);
+        for (Note note : mNotes) {
+            // объект ContentValues используется, чтобы положить данные в DB
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(NotesContract.NotesEntry.COLUMN_TITLE, note.getTitle());
+            contentValues.put(NotesContract.NotesEntry.COLUMN_DESCRIPTION, note.getDescription());
+            contentValues.put(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK, note.getDayOfWeek());
+            contentValues.put(NotesContract.NotesEntry.COLUMN_PRIORITY, note.getPriority());
+
+            database.insert(NotesContract.NotesEntry.TABLE_NAME, null, contentValues);
+        }
+
+        ArrayList<Note> notesFromDataBase = new ArrayList<>();
+        // Cursor (объект) используется, чтобы получить данные из DB
+        Cursor cursor = database.query(NotesContract.NotesEntry.TABLE_NAME,
+                null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
+            String description = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+            String dayOfWeek = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK));
+            int priority = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_PRIORITY));
+
+            Note note = new Note(title, description, dayOfWeek, priority);
+            notesFromDataBase.add(note);
+        }
+
+        mAdapter = new NotesAdapter(notesFromDataBase);
         mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mNotesRecyclerView.setAdapter(mAdapter);
 
