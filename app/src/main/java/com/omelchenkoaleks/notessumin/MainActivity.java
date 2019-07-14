@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private NotesAdapter mAdapter;
 
     private NotesDBHelper mDBHelper;
+    private SQLiteDatabase mSQLiteDatabase;
 
     // static - чтобы не нужно было создавать новый объект активити
     // final - чтобы случайно не присвоить ему новое значение
@@ -33,20 +34,9 @@ public class MainActivity extends AppCompatActivity {
         mNotesRecyclerView = findViewById(R.id.notes_recycler_view);
 
         mDBHelper = new NotesDBHelper(this);
-        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        mSQLiteDatabase = mDBHelper.getWritableDatabase();
 
-        // Cursor (объект) используется, чтобы получить данные из DB
-        Cursor cursor = database.query(NotesContract.NotesEntry.TABLE_NAME,
-                null, null, null, null, null, null);
-        while (cursor.moveToNext()) {
-            String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
-            String description = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
-            String dayOfWeek = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK));
-            int priority = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_PRIORITY));
-
-            Note note = new Note(title, description, dayOfWeek, priority);
-            mNotes.add(note);
-        }
+        getData();
 
         mAdapter = new NotesAdapter(mNotes);
         mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -90,18 +80,50 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(mNotesRecyclerView);
     }
 
+    /*
+        для того, чтобы организовать удаление из базы данных:
+            1, нужно добавить поле id в объект Note (в данном приложении)
+            2, получить это id (мы получаем здесь)
+            3, формируем две переменные для параметров в метод delete()
+     */
     private void remove(int position) {
+        int id = mNotes.get(position).getId();
+        String where = NotesContract.NotesEntry._ID + " = ?";
+        String[] whereArgs = new String[] {Integer.toString(id)};
+        mSQLiteDatabase.delete(NotesContract.NotesEntry.TABLE_NAME, where, whereArgs);
+
+        getData();
+
         /*
                     каждый раз при добавлении или удалении айтема в
                     RecyclerView нужно сообщить об этом адаптеру
                     используется метод notifyDataSetChanged()
                  */
-        mNotes.remove(position);
         mAdapter.notifyDataSetChanged();
     }
 
     public void onClickAddNote(View view) {
         Intent intent = new Intent(this, AddNoteActivity.class);
         startActivity(intent);
+    }
+
+    private void getData() {
+        // перед получением данных не забываем очистить масив :)
+        mNotes.clear();
+
+        // Cursor (объект) используется, чтобы получить данные из DB
+        Cursor cursor = mSQLiteDatabase.query(NotesContract.NotesEntry.TABLE_NAME,
+                null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry._ID));
+            String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
+            String description = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+            String dayOfWeek = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK));
+            int priority = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_PRIORITY));
+
+            Note note = new Note(id, title, description, dayOfWeek, priority);
+            mNotes.add(note);
+        }
+        cursor.close(); // не забываем закрыть курсор :)
     }
 }

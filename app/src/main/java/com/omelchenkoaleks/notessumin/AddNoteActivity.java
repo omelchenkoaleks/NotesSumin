@@ -56,7 +56,7 @@ public class AddNoteActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Не заполнены поля!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.warning_fill_fields), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -66,6 +66,6 @@ public class AddNoteActivity extends AppCompatActivity {
         в качестве параметров
      */
     private boolean isFilled(String title, String description) {
-        return !title.isEmpty() & !description.isEmpty();
+        return !title.isEmpty() && !description.isEmpty();
     }
 }
