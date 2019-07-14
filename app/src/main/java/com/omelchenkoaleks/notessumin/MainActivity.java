@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         mDBHelper = new NotesDBHelper(this);
         SQLiteDatabase database = mDBHelper.getWritableDatabase();
-        database.delete(NotesContract.NotesEntry.TABLE_NAME, null, null);
 
         // Cursor (объект) используется, чтобы получить данные из DB
         Cursor cursor = database.query(NotesContract.NotesEntry.TABLE_NAME,
