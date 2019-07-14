@@ -113,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Cursor (объект) используется, чтобы получить данные из DB
         Cursor cursor = mSQLiteDatabase.query(NotesContract.NotesEntry.TABLE_NAME,
-                null, null, null, null, null, null);
+                null, null, null, null, null,
+                NotesContract.NotesEntry.COLUMN_PRIORITY); // сортируем по приоритеу
         while (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry._ID));
             String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
