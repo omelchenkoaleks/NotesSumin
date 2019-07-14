@@ -39,7 +39,14 @@ public class AddNoteActivity extends AppCompatActivity {
     public void onClickSaveNote(View view) {
         String title = mTitleEditText.getText().toString().trim();
         String description = mDescriptionEditText.getText().toString().trim();
-        String dayOfWeek = mDaysOfWeekSpinner.getSelectedItem().toString();
+
+        /*
+            т.к. метод getSelectedItemPosition() возвращает позицию с нуля, то
+            в объект ContentValues мы добавляем 1 (то есть если метод вернет
+            нам понедельник - это ноль, но мы добавляем единицу = 1 и так далее :) )
+         */
+        int dayOfWeek = mDaysOfWeekSpinner.getSelectedItemPosition();
+
         int radioButtonId = mPriorityRadioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = findViewById(radioButtonId);
         int priority = Integer.parseInt(radioButton.getText().toString());
@@ -48,7 +55,7 @@ public class AddNoteActivity extends AppCompatActivity {
             ContentValues contentValues = new ContentValues();
             contentValues.put(NotesContract.NotesEntry.COLUMN_TITLE, title);
             contentValues.put(NotesContract.NotesEntry.COLUMN_DESCRIPTION, description);
-            contentValues.put(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK, dayOfWeek);
+            contentValues.put(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK, dayOfWeek + 1);
             contentValues.put(NotesContract.NotesEntry.COLUMN_PRIORITY, priority);
 
             mSQLiteDatabase.insert(NotesContract.NotesEntry.TABLE_NAME, null, contentValues);

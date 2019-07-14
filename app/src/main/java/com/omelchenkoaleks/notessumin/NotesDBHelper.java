@@ -6,7 +6,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class NotesDBHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "notes.db";
-    public static final int DB_VERSION = 1;
+
+    /*
+        повышаем версию базы данных, потому что произвели в ней изменения =
+        теперь сработает метод onUpgrade старая будет удалена, а новая создана
+     */
+    public static final int DB_VERSION = 2;
 
     public NotesDBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
