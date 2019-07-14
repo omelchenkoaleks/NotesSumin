@@ -36,7 +36,6 @@ public class AddNoteActivity extends AppCompatActivity {
         int priority = Integer.parseInt(radioButton.getText().toString());
 
         Note note = new Note(title, description, dayOfWeek, priority);
-        MainActivity.mNotes.add(note); // здесь добавляем в активити в массив (что там ...)
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

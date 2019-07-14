@@ -1,6 +1,5 @@
 package com.omelchenkoaleks.notessumin;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     // static - чтобы не нужно было создавать новый объект активити
     // final - чтобы случайно не присвоить ему новое значение
-    public static final ArrayList<Note> mNotes = new ArrayList<>();
+    private final ArrayList<Note> mNotes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,36 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
         mDBHelper = new NotesDBHelper(this);
         SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        database.delete(NotesContract.NotesEntry.TABLE_NAME, null, null);
 
-        if (mNotes.isEmpty()) {
-            mNotes.add(new Note("Парикмахер", "сделать прическу", "понедельник", 0));
-            mNotes.add(new Note("Курсы", "програмирование", "вторник", 2));
-            mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
-            mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
-            mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
-            mNotes.add(new Note("Пикник", "шашлык", "среда", 1));
-            mNotes.add(new Note("Пикник", "шашлык", "среда", 0));
-            mNotes.add(new Note("Пикник", "шашлык", "среда", 2));
-            mNotes.add(new Note("Охота", "на раков", "понедельник", 2));
-            mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
-            mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 1));
-            mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
-            mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 1));
-            mNotes.add(new Note("Рыбалка", "рыбы наловить", "воскресенье", 2));
-        }
-
-        for (Note note : mNotes) {
-            // объект ContentValues используется, чтобы положить данные в DB
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(NotesContract.NotesEntry.COLUMN_TITLE, note.getTitle());
-            contentValues.put(NotesContract.NotesEntry.COLUMN_DESCRIPTION, note.getDescription());
-            contentValues.put(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK, note.getDayOfWeek());
-            contentValues.put(NotesContract.NotesEntry.COLUMN_PRIORITY, note.getPriority());
-
-            database.insert(NotesContract.NotesEntry.TABLE_NAME, null, contentValues);
-        }
-
-        ArrayList<Note> notesFromDataBase = new ArrayList<>();
         // Cursor (объект) используется, чтобы получить данные из DB
         Cursor cursor = database.query(NotesContract.NotesEntry.TABLE_NAME,
                 null, null, null, null, null, null);
@@ -75,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
             int priority = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_PRIORITY));
 
             Note note = new Note(title, description, dayOfWeek, priority);
-            notesFromDataBase.add(note);
+            mNotes.add(note);
         }
 
-        mAdapter = new NotesAdapter(notesFromDataBase);
+        mAdapter = new NotesAdapter(mNotes);
         mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mNotesRecyclerView.setAdapter(mAdapter);
 
