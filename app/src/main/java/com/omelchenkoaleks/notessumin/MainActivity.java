@@ -111,9 +111,22 @@ public class MainActivity extends AppCompatActivity {
         // перед получением данных не забываем очистить масив :)
         mNotes.clear();
 
+        /*
+            ПРИМЕР: как реализовать выборку заметок только с наивысшим приоритетом:
+                1, selection - указываем колонку и условие с подстановкой
+                2, selectionArgs - число в данном случае тип String, выше которого
+                хотим приоритет
+         */
+        String selection = NotesContract.NotesEntry.COLUMN_PRIORITY + " < ?";
+        String[] selectionArgs = new String[] {"2"};
+
         // Cursor (объект) используется, чтобы получить данные из DB
         Cursor cursor = mSQLiteDatabase.query(NotesContract.NotesEntry.TABLE_NAME,
-                null, null, null, null, null,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
                 NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK); // сортируем по дню недели
         while (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry._ID));
