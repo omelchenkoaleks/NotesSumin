@@ -117,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
                 2, selectionArgs - число в данном случае тип String, выше которого
                 хотим приоритет
          */
-        String selection = NotesContract.NotesEntry.COLUMN_PRIORITY + " < ?";
-        String[] selectionArgs = new String[] {"2"};
+        String selection = NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK + " == ?";
+        String[] selectionArgs = new String[] {"1"};
 
         // Cursor (объект) используется, чтобы получить данные из DB
         Cursor cursor = mSQLiteDatabase.query(NotesContract.NotesEntry.TABLE_NAME,
