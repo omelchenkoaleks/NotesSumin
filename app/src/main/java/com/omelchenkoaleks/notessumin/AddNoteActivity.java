@@ -1,5 +1,6 @@
 package com.omelchenkoaleks.notessumin;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
@@ -26,6 +27,12 @@ public class AddNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
+
+        // убираем ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         mTitleEditText = findViewById(R.id.title_edit_text);
         mDescriptionEditText = findViewById(R.id.description_edit_text);
