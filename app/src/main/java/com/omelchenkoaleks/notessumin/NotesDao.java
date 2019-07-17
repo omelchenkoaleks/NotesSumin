@@ -5,7 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /*
     DAO - data access object (объект доступа к данным)
@@ -23,7 +23,7 @@ public interface NotesDao {
             у нас это "выбираем все из базы и сортируем по дням недели"
     */
     @Query("SELECT * FROM notes ORDER BY dayOfWeek")
-    ArrayList<Note> getAllNotes();
+    List<Note> getAllNotes();
 
     /*
         добавляет данные в базу данных

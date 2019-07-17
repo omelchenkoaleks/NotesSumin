@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mNotesRecyclerView;
     private NotesAdapter mAdapter;
+    private NotesDatabase mNotesDatabase;
 
     private final ArrayList<Note> mNotes = new ArrayList<>();
 
@@ -33,8 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
         mNotesRecyclerView = findViewById(R.id.notes_recycler_view);
 
+        // получаем базу данных
+        mNotesDatabase = NotesDatabase.getInstance(this);
+
         mAdapter = new NotesAdapter(mNotes);
         mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        getData();
         mNotesRecyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
@@ -76,11 +82,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void remove(int position) {
-        int id = mNotes.get(position).getId();
+        Note note = mNotes.get(position);
+        mNotesDatabase.mNotesDao().deleteNote(note);
+        getData();
+        mAdapter.notifyDataSetChanged();
     }
 
     public void onClickAddNote(View view) {
         Intent intent = new Intent(this, AddNoteActivity.class);
         startActivity(intent);
+    }
+
+    private void getData() {
+        // этой строчкой мы получаем все заметки из базы данных
+        List<Note> notesFromDB = mNotesDatabase.mNotesDao().getAllNotes();
+        mNotes.clear();
+        mNotes.addAll(notesFromDB);
     }
 }

@@ -59,7 +59,7 @@ public class NotesAdapter
         Note note = mNotes.get(position);
         holder.mTitleTextView.setText(note.getTitle());
         holder.mDescriptionTextView.setText(note.getDescription());
-        holder.mDayOfWeekTextView.setText(Note.getDayAsString(note.getDayOfWeek()));
+        holder.mDayOfWeekTextView.setText(Note.getDayAsString(note.getDayOfWeek() + 1));
 
         /*
             получаем приоритет (priority) из заметки (объекта) и уже в зависимости от
