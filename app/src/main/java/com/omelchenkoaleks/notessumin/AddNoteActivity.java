@@ -2,6 +2,7 @@ package com.omelchenkoaleks.notessumin;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -20,14 +21,14 @@ public class AddNoteActivity extends AppCompatActivity {
     private Spinner mDaysOfWeekSpinner;
     private RadioGroup mPriorityRadioGroup;
 
-    private NotesDatabase mNotesDatabase;
+    private MainViewModel mMainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
 
-        mNotesDatabase = NotesDatabase.getInstance(this);
+        mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         // убираем ActionBar
         ActionBar actionBar = getSupportActionBar();
@@ -58,7 +59,7 @@ public class AddNoteActivity extends AppCompatActivity {
 
         if (isFilled(title, description)) {
             Note note = new Note(title, description, dayOfWeek, priority);
-            mNotesDatabase.mNotesDao().insertNote(note);
+            mMainViewModel.insertNote(note);
 
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);

@@ -10,6 +10,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,14 +22,15 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mNotesRecyclerView;
     private NotesAdapter mAdapter;
-    private NotesDatabase mNotesDatabase;
-
     private final ArrayList<Note> mNotes = new ArrayList<>();
+    private MainViewModel mMainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         // убираем ActionBar
         ActionBar actionBar = getSupportActionBar();
@@ -36,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mNotesRecyclerView = findViewById(R.id.notes_recycler_view);
-
-        // получаем базу данных
-        mNotesDatabase = NotesDatabase.getInstance(this);
 
         mAdapter = new NotesAdapter(mNotes);
         mNotesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void remove(int position) {
         Note note = mNotes.get(position);
-        mNotesDatabase.mNotesDao().deleteNote(note);
+        mMainViewModel.deleteNote(note);
     }
 
     public void onClickAddNote(View view) {
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             теперь объект notesFromDB являеется Observable - то есть просматривается (наблюдается)
             и, если в нем произойдук какие-либо изменения база данных сообщит об этих изменениях
           */
-        LiveData<List<Note>> notesFromDB = mNotesDatabase.mNotesDao().getAllNotes();
+        LiveData<List<Note>> notesFromDB = mMainViewModel.getNotes();
         // чтобы использовать полученные изменения делаем это:
             // 1 параметр - владелец this
             // 2 параметр - объект класса Observable - создаем новый
