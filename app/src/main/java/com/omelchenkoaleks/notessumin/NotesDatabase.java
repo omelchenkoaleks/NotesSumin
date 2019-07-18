@@ -43,18 +43,11 @@ public abstract class NotesDatabase extends RoomDatabase {
                         context,
                         наш класс который рассширяет RoomDatabase
                         имя базы данных
-                у полученного стоителя вызываем метод build()
+                у полученного строителя вызываем метод build()
              */
-            /*
-                TODO: удалить метод allowMainThreadQueries() после тестирования
-                этот метод позволяет провести тесты (работу) в главном потоке
-              */
-
                 sNotesDatabase = Room.databaseBuilder(
                         context, NotesDatabase.class, DB_NAME)
-                        .allowMainThreadQueries() // этот используется только в целях тестирования
                         .build();
-
             }
         }
         return sNotesDatabase;
