@@ -9,10 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NotesAdapter
         extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
-    private ArrayList<Note> mNotes;
+    private List<Note> mNotes;
     private OnNoteClickListener mOnNoteClickListener;
 
     public NotesAdapter(ArrayList<Note> notes) {
@@ -40,6 +41,7 @@ public class NotesAdapter
      */
     interface OnNoteClickListener {
         void onNoteClick(int position);
+
         void onLongClick(int position); // для удаления при долгом нажатии
     }
 
@@ -119,5 +121,14 @@ public class NotesAdapter
                 }
             });
         }
+    }
+
+    public void setNotes(List<Note> notes) {
+        mNotes = notes;
+        notifyDataSetChanged();
+    }
+
+    public List<Note> getNotes() {
+        return mNotes;
     }
 }

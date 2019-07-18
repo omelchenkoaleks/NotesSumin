@@ -10,7 +10,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -66,25 +65,25 @@ public class MainActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(
                 new ItemTouchHelper.SimpleCallback(
                         0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView,
-                                  @NonNull RecyclerView.ViewHolder viewHolder,
-                                  @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
+                    @Override
+                    public boolean onMove(@NonNull RecyclerView recyclerView,
+                                          @NonNull RecyclerView.ViewHolder viewHolder,
+                                          @NonNull RecyclerView.ViewHolder target) {
+                        return false;
+                    }
 
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                remove(viewHolder.getAdapterPosition());
-            }
-        });
+                    @Override
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                        remove(viewHolder.getAdapterPosition());
+                    }
+                });
 
         // ItemTouchHelper нужно прикрепить к RecyclerView
         itemTouchHelper.attachToRecyclerView(mNotesRecyclerView);
     }
 
     private void remove(int position) {
-        Note note = mNotes.get(position);
+        Note note = mAdapter.getNotes().get(position);
         mMainViewModel.deleteNote(note);
     }
 
@@ -100,16 +99,16 @@ public class MainActivity extends AppCompatActivity {
           */
         LiveData<List<Note>> notesFromDB = mMainViewModel.getNotes();
         // чтобы использовать полученные изменения делаем это:
-            // 1 параметр - владелец this
-            // 2 параметр - объект класса Observable - создаем новый
+        // 1 параметр - владелец this
+        // 2 параметр - объект класса Observable - создаем новый
         notesFromDB.observe(this, new Observer<List<Note>>() {
             // этот метод принимает в качестве параметра лист записей, которые изменились
             @Override
             public void onChanged(List<Note> notesFromLiveData) {
-                mNotes.clear();
-                mNotes.addAll(notesFromLiveData);
-                mAdapter.notifyDataSetChanged();
+                mAdapter.setNotes(notesFromLiveData);
             }
         });
     }
+
+
 }
