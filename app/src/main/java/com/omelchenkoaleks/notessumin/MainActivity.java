@@ -8,6 +8,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -84,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
     private void remove(int position) {
         Note note = mNotes.get(position);
         mNotesDatabase.mNotesDao().deleteNote(note);
-        getData();
-        mAdapter.notifyDataSetChanged();
     }
 
     public void onClickAddNote(View view) {
@@ -94,9 +94,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getData() {
-        // этой строчкой мы получаем все заметки из базы данных
-        List<Note> notesFromDB = mNotesDatabase.mNotesDao().getAllNotes();
-        mNotes.clear();
-        mNotes.addAll(notesFromDB);
+        /*
+            теперь объект notesFromDB являеется Observable - то есть просматривается (наблюдается)
+            и, если в нем произойдук какие-либо изменения база данных сообщит об этих изменениях
+          */
+        LiveData<List<Note>> notesFromDB = mNotesDatabase.mNotesDao().getAllNotes();
+        // чтобы использовать полученные изменения делаем это:
+            // 1 параметр - владелец this
+            // 2 параметр - объект класса Observable - создаем новый
+        notesFromDB.observe(this, new Observer<List<Note>>() {
+            // этот метод принимает в качестве параметра лист записей, которые изменились
+            @Override
+            public void onChanged(List<Note> notesFromLiveData) {
+                mNotes.clear();
+                mNotes.addAll(notesFromLiveData);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }
